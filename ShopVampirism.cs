@@ -41,7 +41,7 @@ namespace ShopVampirism
         {
             if (JsonVampirism == null || SHOP_API == null) return;
 
-            SHOP_API.CreateCategory(CategoryName, "Ð’Ð°Ð¼Ð¿Ð¸Ñ€Ð¸Ð·Ð¼");
+            SHOP_API.CreateCategory(CategoryName, "Âàìïèðèçì");
 
             foreach (var item in JsonVampirism.Properties().Where(p => p.Value is JObject))
             {
