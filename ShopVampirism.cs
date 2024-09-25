@@ -11,7 +11,7 @@ namespace ShopVampirism
         public override string ModuleName => "[SHOP] Vampirism";
         public override string ModuleDescription => "";
         public override string ModuleAuthor => "E!N";
-        public override string ModuleVersion => "v1.0.0";
+        public override string ModuleVersion => "v1.0.1";
 
         private IShopApi? SHOP_API;
         private const string CategoryName = "Vampirism";
@@ -41,7 +41,7 @@ namespace ShopVampirism
         {
             if (JsonVampirism == null || SHOP_API == null) return;
 
-            SHOP_API.CreateCategory(CategoryName, "Âàìïèðèçì");
+            SHOP_API.CreateCategory(CategoryName, "Ð’Ð°Ð¼Ð¿Ð¸Ñ€Ð¸Ð·Ð¼");
 
             foreach (var item in JsonVampirism.Properties().Where(p => p.Value is JObject))
             {
@@ -93,7 +93,7 @@ namespace ShopVampirism
             });
         }
 
-        public void OnClientBuyItem(CCSPlayerController player, int itemId, string categoryName, string uniqueName,
+        public HookResult OnClientBuyItem(CCSPlayerController player, int itemId, string categoryName, string uniqueName,
             int buyPrice, int sellPrice, int duration, int count)
         {
             if (TryGetVampirismPercent(uniqueName, out float vampirismPercent))
@@ -104,9 +104,10 @@ namespace ShopVampirism
             {
                 Logger.LogError($"{uniqueName} has invalid or missing 'vampirismpercent' in config!");
             }
+            return HookResult.Continue;
         }
 
-        public void OnClientToggleItem(CCSPlayerController player, int itemId, string uniqueName, int state)
+        public HookResult OnClientToggleItem(CCSPlayerController player, int itemId, string uniqueName, int state)
         {
             if (state == 1 && TryGetVampirismPercent(uniqueName, out float vampirismPercent))
             {
@@ -116,11 +117,13 @@ namespace ShopVampirism
             {
                 OnClientSellItem(player, itemId, uniqueName, 0);
             }
+            return HookResult.Continue;
         }
 
-        public void OnClientSellItem(CCSPlayerController player, int itemId, string uniqueName, int sellPrice)
+        public HookResult OnClientSellItem(CCSPlayerController player, int itemId, string uniqueName, int sellPrice)
         {
             playerVampirisms[player.Slot] = null!;
+            return HookResult.Continue;
         }
 
         private bool TryGetVampirismPercent(string uniqueName, out float vampirismPercent)
